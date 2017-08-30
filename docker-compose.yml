@@ -1,0 +1,27 @@
+version: '2.1'
+services:
+
+  database:
+    image: quay.io/azavea/postgis:2.3-postgres9.6-slim
+    environment:
+      - POSTGRES_USER=lamb
+      - POSTGRES_PASSWORD=lamb
+      - POSTGRES_DB=lambnik-test
+    expose:
+      - "5432"
+    volumes:
+      - /opt/dbdata:/var/lib/postgresql/data
+
+  lambnik:
+    image: lambnik
+    build:
+      context: ./src
+      dockerfile: Dockerfile.app
+    environment:
+      - POSTGRES_USER=lamb
+      - POSTGRES_PASSWORD=lamb
+      - POSTGRES_DB=lambnik-test
+    links:
+      - database:database.lambnik.azavea.com
+    volumes:
+      - ./src:/usr/src
