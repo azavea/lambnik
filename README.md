@@ -4,9 +4,8 @@
 Proof of concept mapnik renderer for PostGIS datasources using Python.  Ie, don't run windshaft.
 
 ## Instructions
-1. Have `docker` and `docker-compose` installed
-2. `docker-compose up database`
-3. `./scripts/setupdb.sh`
-4. `docker-compose up lambnik`
+1. Have recent versions of `docker` and `docker-compose` installed
+1. Build the containers and populate the database: `./scripts/update.sh`
+1. Run the local Chalice server: `./scripts/server.sh`
 
-This will create a test image in `src/test.png` with all 80k PWD Stormdrain inlets rendered.
+Test image now available at http://localhost:9000/tile.png

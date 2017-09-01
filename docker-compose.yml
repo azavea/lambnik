@@ -17,6 +17,8 @@ services:
     build:
       context: ./src
       dockerfile: Dockerfile.app
+    ports:
+      - "9000:9000"
     environment:
       - POSTGRES_USER=lamb
       - POSTGRES_PASSWORD=lamb

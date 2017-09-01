@@ -1,1 +1,2 @@
+chalice==1.0.1
 mapnik==0.1

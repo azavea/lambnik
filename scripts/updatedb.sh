@@ -1,8 +1,6 @@
 #!/bin/bash
 
 set -e
-set -x
-
 
 # Execute psql commands on the database container for performance reasons.
 CONTAINER_ID=$(docker-compose -f docker-compose.yml ps -q database)

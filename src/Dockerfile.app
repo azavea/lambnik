@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt \
 COPY . usr/src
 WORKDIR /usr/src/
 
-CMD ["python", "/usr/src/test.py"]
+CMD ["chalice", "local", "--port=9000"]
