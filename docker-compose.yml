@@ -1,5 +1,14 @@
 version: '2.1'
 services:
+  proxy:
+    image: tile-proxy
+    build:
+      context: ./src/proxy
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    links:
+      - tiler:tiler.lambnik.azavea.com
 
   database:
     image: quay.io/azavea/postgis:2.3-postgres9.6-slim
@@ -12,11 +21,11 @@ services:
     volumes:
       - /opt/dbdata/lambnik:/var/lib/postgresql/data
 
-  lambnik:
-    image: lambnik
+  tiler:
+    image: tiler
     build:
-      context: ./src
-      dockerfile: Dockerfile.app
+      context: ./src/tiler
+      dockerfile: Dockerfile
     ports:
       - "9000:9000"
     environment:
