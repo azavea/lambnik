@@ -1,9 +1,17 @@
 import mapnik
+import mercantile
+
 from mapnik import PostGIS, Layer
 from io import BytesIO
 
 
-def render():
+def tile_bounds(z, x, y):
+    return mercantile.bounds(x, y, z)
+
+
+def render(app, z, x, y):
+    b = tile_bounds(z, x, y)
+
     m = mapnik.Map(256, 256)
     im = mapnik.Image(256, 256)
 
@@ -17,9 +25,17 @@ def render():
     m.append_style('My Style', s)
 
     lyr = Layer('PostGIS')
+
+    geometry = '''
+        ST_MakeEnvelope({}, {}, {}, {}, 4326)
+    '''.format(b.east, b.south, b.west, b.north)
+
+    table = '''
+        (select geom from pwd_inlets where ST_Intersects(geom, {})) tileq
+    '''.format(geometry)
     ds = PostGIS(host='database.lambnik.azavea.com',
                  user='lamb', password='lamb',
-                 dbname='lambnik-test', table='pwd_inlets')
+                 dbname='lambnik-test', table=table)
 
     lyr.datasource = ds
     lyr.styles.append('My Style')
