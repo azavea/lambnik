@@ -32,7 +32,9 @@ services:
       - POSTGRES_USER=lamb
       - POSTGRES_PASSWORD=lamb
       - POSTGRES_DB=lambnik-test
+      - AWS_PROFILE=mmcfarland
     links:
       - database:database.lambnik.azavea.com
     volumes:
       - ./src:/usr/src
+      - $HOME/.aws:/root/.aws:ro
