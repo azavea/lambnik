@@ -2,10 +2,6 @@
 
 set -e
 
-if [[ -n "${USACE_LSAPI_DEBUG}" ]]; then
-    set -x
-fi
-
 function usage() {
     echo -n "Usage: $(basename "${0}") [OPTION]
 Login to a running Docker container's shell.

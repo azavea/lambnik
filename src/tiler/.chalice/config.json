@@ -4,6 +4,6 @@
       "api_gateway_stage": "api"
     }
   }, 
-  "version": "2.0", 
-  "app_name": "tiler"
+  "version": "2.0",
+  "app_name": "lambnik-tiler"
 }

@@ -12,7 +12,11 @@ def tile_bounds(z, x, y):
 def render(app, z, x, y):
     b = tile_bounds(z, x, y)
 
+    epsg3857 = '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs'
+    proj = mapnik.Projection(epsg3857)
+
     m = mapnik.Map(256, 256)
+    m.srs = epsg3857
     im = mapnik.Image(256, 256)
 
     s = mapnik.Style()
@@ -25,23 +29,22 @@ def render(app, z, x, y):
     m.append_style('My Style', s)
 
     lyr = Layer('PostGIS')
-
-    geometry = '''
-        ST_MakeEnvelope({}, {}, {}, {}, 4326)
-    '''.format(b.east, b.south, b.west, b.north)
-
-    table = '''
-        (select geom from pwd_inlets where ST_Intersects(geom, {})) tileq
-    '''.format(geometry)
     ds = PostGIS(host='database.lambnik.azavea.com',
                  user='lamb', password='lamb',
-                 dbname='lambnik-test', table=table)
+                 dbname='lambnik-test', table='pwd_inlets')
 
     lyr.datasource = ds
     lyr.styles.append('My Style')
     m.layers.append(lyr)
-    m.zoom_all()
 
-    mapnik.render(m, im)
+    mbox = mapnik.Box2d(b.east, b.south, b.west, b.north)
+    bbox = proj.forward(mbox)
+    try:
+        m.zoom_to_box(bbox)
+        m.buffer_size = 256
+        mapnik.render(m, im)
 
-    return BytesIO(im.tostring('png')).getvalue()
+        img = im.tostring('png')
+        return BytesIO(img).getvalue()
+    except Exception, e:
+        app.log.error(e)
