@@ -5,6 +5,7 @@ set -e
 # Execute psql commands on the database container for performance reasons.
 CONTAINER_ID=$(docker-compose -f docker-compose.yml ps -q database)
 PSQL="docker exec -i $CONTAINER_ID gosu postgres psql -d lambnik-test"
+# PSQL="psql -d lambnik_test -h rds-lambnik-test.cpz8rmcptx2k.us-east-1.rds.amazonaws.com -U lambnik -W"
 
 function usage() {
     echo -n \

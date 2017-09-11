@@ -1,8 +1,10 @@
 import mapnik
 import mercantile
 
-from mapnik import PostGIS, Layer
 from io import BytesIO
+from os import environ
+
+from mapnik import PostGIS, Layer
 
 
 def tile_bounds(z, x, y):
@@ -29,9 +31,11 @@ def render(app, z, x, y):
     m.append_style('My Style', s)
 
     lyr = Layer('PostGIS')
-    ds = PostGIS(host='database.lambnik.azavea.com',
-                 user='lamb', password='lamb',
-                 dbname='lambnik-test', table='pwd_inlets')
+    ds = PostGIS(host=environ.get('POSTGRES_HOST'),
+                 user=environ.get('POSTGRES_USER'),
+                 password=environ.get('POSTGRES_PASSWORD'),
+                 dbname=environ.get('POSTGRES_DB'),
+                 table='pwd_inlets')
 
     lyr.datasource = ds
     lyr.styles.append('My Style')
