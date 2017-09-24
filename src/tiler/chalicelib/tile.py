@@ -6,6 +6,12 @@ from os import environ
 
 from mapnik import PostGIS, Layer
 
+postgis_ds = PostGIS(host=environ.get('POSTGRES_HOST'),
+                     user=environ.get('POSTGRES_USER'),
+                     password=environ.get('POSTGRES_PASSWORD'),
+                     dbname=environ.get('POSTGRES_DB'),
+                     table='pwd_inlets')
+
 
 def tile_bounds(z, x, y):
     return mercantile.bounds(x, y, z)
@@ -31,12 +37,6 @@ def render(app, z, x, y):
     m.append_style('My Style', s)
 
     lyr = Layer('PostGIS')
-    postgis_ds = PostGIS(host=environ.get('POSTGRES_HOST'),
-                         user=environ.get('POSTGRES_USER'),
-                         password=environ.get('POSTGRES_PASSWORD'),
-                         dbname=environ.get('POSTGRES_DB'),
-                         table='pwd_inlets')
-
     lyr.datasource = postgis_ds
     lyr.styles.append('My Style')
     m.layers.append(lyr)
