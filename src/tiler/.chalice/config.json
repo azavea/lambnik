@@ -1,9 +1,19 @@
 {
+  "version": "2.0",
+  "app_name": "lambnik-tiler",
+  "lambda_timeout": 5,
   "stages": {
     "dev": {
       "api_gateway_stage": "api"
+    },
+    "staging": {
+      "api_gateway_stage": "api",
+      "environment_variables": {
+          "POSTGRES_DB": "lambnik_test",
+          "POSTGRES_USER": "lambnik",
+          "POSTGRES_PASSWORD": "<replace_me>",
+          "POSTGRES_HOST": "rds-lambnik.cpz8rmcptx2k.us-east-1.rds.amazonaws.com"
+      }
     }
-  }, 
-  "version": "2.0",
-  "app_name": "lambnik-tiler"
+  }
 }

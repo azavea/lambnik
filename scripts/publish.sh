@@ -11,4 +11,4 @@ Options:
 "
 }
 
-docker-compose run tiler bash -c "chalice deploy"
+docker-compose run tiler bash -c "chalice deploy --stage staging"
