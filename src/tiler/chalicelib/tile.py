@@ -6,20 +6,21 @@ from os import environ
 
 from mapnik import PostGIS, Layer
 
-postgis_ds = PostGIS(host=environ.get('POSTGRES_HOST'),
-                     user=environ.get('POSTGRES_USER'),
-                     password=environ.get('POSTGRES_PASSWORD'),
-                     dbname=environ.get('POSTGRES_DB'),
-                     table='pwd_inlets')
+TYPES = {
+    'a': 'INLCTY4',
+    'b': 'INLCTYC3',
+    'c': 'INLOMG4',
+    'd': 'INLOMG6',
+}
 
 
 def tile_bounds(z, x, y):
     return mercantile.bounds(x, y, z)
 
 
-def grid(z, x, y):
+def grid(z, x, y, inlet_type):
     grd = mapnik.Grid(256, 256)
-    m = create_map(z, x, y)
+    m = create_map(z, x, y, inlet_type)
 
     mapnik.render_layer(m, grd, layer=0, fields=['inlettype'])
     utfgrid = grd.encode('utf', resolution=4)
@@ -27,17 +28,17 @@ def grid(z, x, y):
     return utfgrid
 
 
-def image(z, x, y):
+def image(z, x, y, inlet_type):
     img = mapnik.Image(256, 256)
 
-    m = create_map(z, x, y)
+    m = create_map(z, x, y, inlet_type)
     mapnik.render(m, img)
     png = img.tostring('png')
 
     return BytesIO(png).getvalue()
 
 
-def create_map(z, x, y):
+def create_map(z, x, y, inlet_type):
     # Get the lat/lng bounds for this ZXY tile
     b = tile_bounds(z, x, y)
 
@@ -56,8 +57,21 @@ def create_map(z, x, y):
     style.rules.append(rule)
     m.append_style('My Style', style)
 
+    # Apply any dynamic filtering
+    inlet = TYPES.get(inlet_type, None)
+    if (inlet):
+        tbl = "(select geom, inlettype from pwd_inlets where inlettype = '{}') as q".format(inlet)
+    else:
+        tbl = 'pwd_inlets'
+
     # Create a postgis layer
+    postgis_ds = PostGIS(host=environ.get('POSTGRES_HOST'),
+                         user=environ.get('POSTGRES_USER'),
+                         password=environ.get('POSTGRES_PASSWORD'),
+                         dbname=environ.get('POSTGRES_DB'),
+                         table=tbl)
     lyr = Layer('PostGIS')
+
     lyr.datasource = postgis_ds
     lyr.styles.append('My Style')
     m.layers.append(lyr)

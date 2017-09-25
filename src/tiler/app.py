@@ -16,7 +16,9 @@ def index():
 def render_grid(z, x, y):
     app.log.debug('grid')
     try:
-        grd = tile.grid(int(z), int(x), int(y))
+        inlet = app.current_request.query_params.get('type', None)
+        grd = tile.grid(int(z), int(x), int(y), inlet)
+
         return grd
     except Exception, e:
         app.log.error(e)
@@ -27,7 +29,9 @@ def render_grid(z, x, y):
 def render_tile(z, x, y):
     app.log.debug('tile')
     try:
-        img = tile.image(int(z), int(x), int(y))
+        inlet = app.current_request.query_params.get('type', None)
+        img = tile.image(int(z), int(x), int(y), inlet)
+
         return Response(body=img, status_code=200,
                         headers={
                             'Content-Type': 'image/png'
