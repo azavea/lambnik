@@ -69,7 +69,11 @@ def create_map(z, x, y, inlet_type):
                          user=environ.get('POSTGRES_USER'),
                          password=environ.get('POSTGRES_PASSWORD'),
                          dbname=environ.get('POSTGRES_DB'),
-                         table=tbl)
+                         table=tbl,
+                         connect_timeout=2,
+                         persist_connection=False,
+                         initial_size=1,
+                         max_size=1)
     lyr = Layer('PostGIS')
 
     lyr.datasource = postgis_ds
