@@ -26,15 +26,19 @@
 
   <script>
 
+    var LAMBNIK_DOMAIN = 'https://d1y4se194ujvw1.cloudfront.net';
+    // If you're running locally and want to test, use this host instead
+    // var LAMBNIK_DOMAIN = 'http://localhost:9001';
+
     var center = new L.LatLng(39.95, -75.15),
         map = new L.Map('map', {center: center, zoom: 13}),
         baselayer = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png').addTo(map),
-        tileLayer = L.tileLayer('https://d1y4se194ujvw1.cloudfront.net/tile/{z}/{x}/{y}?type={type}', {
+        tileLayer = L.tileLayer(LAMBNIK_DOMAIN + '/tile/{z}/{x}/{y}?type={type}', {
             type: function() {
                 return document.getElementById('inlet-type').value;
         }}).addTo(map);
 
-     var grid = new L.UtfGrid('https://d1y4se194ujvw1.cloudfront.net/grid/{z}/{x}/{y}?type={type}', {
+     var grid = new L.UtfGrid(LAMBNIK_DOMAIN + '/grid/{z}/{x}/{y}?type={type}', {
             useJsonP: false,
             type: function() {
                 return document.getElementById('inlet-type').value;

@@ -6,7 +6,7 @@ services:
       context: ./src/proxy
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "9001:80"
     links:
       - tiler:tiler.lambnik.azavea.com
 
