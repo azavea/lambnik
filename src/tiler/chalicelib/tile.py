@@ -70,7 +70,7 @@ def create_map(z, x, y, inlet_type):
                          password=environ.get('POSTGRES_PASSWORD'),
                          dbname=environ.get('POSTGRES_DB'),
                          table=tbl,
-                         connect_timeout=2,
+                         connect_timeout=5,
                          persist_connection=False,
                          initial_size=1,
                          max_size=1)
